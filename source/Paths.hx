@@ -70,11 +70,6 @@ class Paths
 		return getPath('data/$key.json', TEXT, library);
 	}
 
-	inline static public function hscript(key:String, ?library:String)
-	{
-		return file('scripts/$key.hscript', TEXT, library);
-	}
-
 	static public function sound(key:String, ?library:String)
 	{
 		return getPath('sounds/$key.$SOUND_EXT', SOUND, library);
