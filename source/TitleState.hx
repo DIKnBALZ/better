@@ -29,13 +29,19 @@ import openfl.Assets;
 
 using StringTools;
 class TitleState extends MusicBeatState {
-	var initialized:Bool = false;
-	var blackScreen:FlxSprite;
 	var credGroup:FlxGroup;
-	var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
-	var ngSpr:FlxSprite;
+
+	var newgroundsLogo:FlxSprite;
 	var curWacky:Array<String> = [];
+
+	var initialized:Bool = false;
+	
+	var logo:FlxSprite;
+	var girlfriend:FlxSprite;
+	var danceLeft:Bool = false;
+	var titleText:FlxSprite;
+	
 	override public function create():Void {
 		PlayerSettings.init();
 		curWacky = FlxG.random.getObject(getIntroTextShit());
@@ -49,24 +55,54 @@ class TitleState extends MusicBeatState {
 			if (!StoryMenuState.weekUnlocked[0]) StoryMenuState.weekUnlocked[0] = true;
 		}
 
-		#if FREEPLAY
-			FlxG.switchState(new FreeplayState());
-		#elseif CHARTING
-			FlxG.switchState(new ChartingState());
-		#else
-			new FlxTimer().start(1, function(tmr:FlxTimer) {startIntro();}); // look into this goofy ah semicolon hmm
-		#end
-
 		#if desktop
 			DiscordClient.initialize();
 			Application.current.onExit.add(function(exitCode) {DiscordClient.shutdown();});
 		#end
+
+		girlfriend = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
+		girlfriend.frames = Paths.getSparrowAtlas('gfDanceTitle');
+		girlfriend.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+		girlfriend.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+		add(girlfriend);
+		girlfriend.antialiasing = true;
+
+		logo = new FlxSprite(-150, -100);
+		logo.frames = Paths.getSparrowAtlas('logoBumpin');
+		logo.animation.addByPrefix('bump', 'logo bumpin', 24);
+		logo.animation.play('bump');
+		add(logo);
+		logo.antialiasing = true;
+		logo.updateHitbox();
+
+		titleText = new FlxSprite(100, FlxG.height * 0.8);
+		titleText.frames = Paths.getSparrowAtlas('titleEnter');
+		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
+		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
+		titleText.animation.play('idle');
+		add(titleText);
+		titleText.antialiasing = true;
+		titleText.updateHitbox();
+
+		credGroup = new FlxGroup();
+		add(credGroup);
+
+		textGroup = new FlxGroup();
+
+		var blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		credGroup.add(blackScreen);
+
+		newgroundsLogo = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
+		newgroundsLogo.setGraphicSize(Std.int(newgroundsLogo.width * 0.8));
+		add(newgroundsLogo);
+		newgroundsLogo.visible = false;
+		newgroundsLogo.antialiasing = true;
+		newgroundsLogo.updateHitbox();
+		newgroundsLogo.screenCenter(X);
+
+		new FlxTimer().start(1, function(tmr:FlxTimer) {startIntro();});
 	}
 
-	var logoBl:FlxSprite;
-	var gfDance:FlxSprite;
-	var danceLeft:Bool = false;
-	var titleText:FlxSprite;
 	function startIntro() {
 		if (!initialized) {
 			var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
@@ -79,59 +115,12 @@ class TitleState extends MusicBeatState {
 			transOut = FlxTransitionableState.defaultTransOut;
 
 			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-			FlxG.sound.music.fadeIn(4, 0, 0.7);
+			FlxG.sound.music.fadeIn(6, 0, 0.7);
 		}
 
 		Conductor.changeBPM(102);
-		persistentUpdate = true;
+		persistentUpdate = true; // ???
 
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		add(bg);
-
-		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
-		gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
-		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-		gfDance.antialiasing = true;
-		add(gfDance);
-
-		logoBl = new FlxSprite(-150, -100);
-		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
-		logoBl.antialiasing = true;
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
-		logoBl.animation.play('bump');
-		logoBl.updateHitbox();
-		add(logoBl);
-
-		titleText = new FlxSprite(100, FlxG.height * 0.8);
-		titleText.frames = Paths.getSparrowAtlas('titleEnter');
-		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
-		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
-		titleText.antialiasing = true;
-		titleText.animation.play('idle');
-		titleText.updateHitbox();
-		add(titleText);
-
-		credGroup = new FlxGroup();
-		add(credGroup);
-		textGroup = new FlxGroup();
-
-		blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		credGroup.add(blackScreen);
-
-		credTextShit = new Alphabet(0, 0, "ninjamuffin99\nPhantomArcade\nkawaisprite\nevilsk8er", true);
-		credTextShit.screenCenter();
-		credTextShit.visible = false;
-
-		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
-		add(ngSpr);
-		ngSpr.visible = false;
-		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
-		ngSpr.updateHitbox();
-		ngSpr.screenCenter(X);
-		ngSpr.antialiasing = true;
-
-		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 		FlxG.mouse.visible = false;
 		if (initialized) skipIntro();
 		else initialized = true;
@@ -205,40 +194,29 @@ class TitleState extends MusicBeatState {
 
 	override function beatHit() {
 		super.beatHit();
-		logoBl.animation.play('bump');
+		logo.animation.play('bump');
 		danceLeft = !danceLeft;
-		if (danceLeft) gfDance.animation.play('danceRight');
-		else gfDance.animation.play('danceLeft');
+		if (danceLeft) girlfriend.animation.play('danceRight');
+		else girlfriend.animation.play('danceLeft');
 
 		switch (curBeat) {
-			case 1:
-				createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
-			case 3:
-				addMoreText('present');
-			case 4:
-				deleteCoolText();
-			case 5:
-				createCoolText(['In association', 'with']);
+			case 1: createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
+			case 3: addMoreText('present');
+			case 4: deleteCoolText();
+			case 5: createCoolText(['In association', 'with']);
 			case 7:
 				addMoreText('newgrounds');
-				ngSpr.visible = true;
+				newgroundsLogo.visible = true;
 			case 8:
 				deleteCoolText();
-				ngSpr.visible = false;
-			case 9:
-				createCoolText([curWacky[0]]);
-			case 11:
-				addMoreText(curWacky[1]);
-			case 12:
-				deleteCoolText();
-			case 13:
-				addMoreText('Friday');
-			case 14:
-				addMoreText('Night');
-			case 15:
-				addMoreText('Funkin');
-			case 16:
-				skipIntro();
+				newgroundsLogo.visible = false;
+			case 9: createCoolText([curWacky[0]]);
+			case 11: addMoreText(curWacky[1]);
+			case 12: deleteCoolText();
+			case 13: addMoreText('Friday');
+			case 14: addMoreText('Night');
+			case 15: addMoreText('Funkin');
+			case 16: skipIntro();
 		}
 	}
 
@@ -246,7 +224,7 @@ class TitleState extends MusicBeatState {
 	function skipIntro():Void {
 		if (!skippedIntro) {
 			FlxG.camera.flash(FlxColor.WHITE, 4);
-			remove(ngSpr);
+			remove(newgroundsLogo);
 			remove(credGroup);
 			skippedIntro = true;
 		}
