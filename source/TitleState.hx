@@ -30,18 +30,17 @@ import openfl.Assets;
 using StringTools;
 class TitleState extends MusicBeatState {
 	var credGroup:FlxGroup;
-	var textGroup:FlxGroup;
+	var textGroup:FlxGroup; // not sure what these 2 are for ngl
 
+	var curWacky:Array<String> = []; // introtext shenanigans
 	var newgroundsLogo:FlxSprite;
-	var curWacky:Array<String> = [];
 
-	var initialized:Bool = false;
-	
 	var logo:FlxSprite;
 	var girlfriend:FlxSprite;
-	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
 	
+	var danceLeft:Bool = false;
+	var initialized:Bool = false;
 	override public function create():Void {
 		PlayerSettings.init();
 		curWacky = FlxG.random.getObject(getIntroTextShit());
