@@ -9,11 +9,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 
-/**
-	*DEBUG MODE
- */
-class AnimationDebug extends FlxState
-{
+class AnimationDebug extends FlxState {
 	var bf:Boyfriend;
 	var dad:Character;
 	var char:Character;
@@ -25,25 +21,20 @@ class AnimationDebug extends FlxState
 	var daAnim:String = 'spooky';
 	var camFollow:FlxObject;
 
-	public function new(daAnim:String = 'spooky')
-	{
+	public function new(daAnim:String = 'spooky') {
 		super();
 		this.daAnim = daAnim;
 	}
 
-	override function create()
-	{
+	override function create() {
 		FlxG.sound.music.stop();
 
 		var gridBG:FlxSprite = FlxGridOverlay.create(10, 10);
 		gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
-		if (daAnim == 'bf')
-			isDad = false;
-
-		if (isDad)
-		{
+		if (daAnim == 'bf') isDad = false;
+		if (isDad) {
 			dad = new Character(0, 0, daAnim);
 			dad.screenCenter();
 			dad.debugMode = true;
@@ -51,9 +42,7 @@ class AnimationDebug extends FlxState
 
 			char = dad;
 			dad.flipX = false;
-		}
-		else
-		{
+		} else {
 			bf = new Boyfriend(0, 0);
 			bf.screenCenter();
 			bf.debugMode = true;
@@ -118,47 +107,23 @@ class AnimationDebug extends FlxState
 		if (FlxG.keys.justPressed.Q)
 			FlxG.camera.zoom -= 0.25;
 
-		if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L)
-		{
-			if (FlxG.keys.pressed.I)
-				camFollow.velocity.y = -90;
-			else if (FlxG.keys.pressed.K)
-				camFollow.velocity.y = 90;
-			else
-				camFollow.velocity.y = 0;
+		if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L) {
+			if (FlxG.keys.pressed.I) camFollow.velocity.y = -90;
+			else if (FlxG.keys.pressed.K) camFollow.velocity.y = 90;
+			else camFollow.velocity.y = 0;
 
-			if (FlxG.keys.pressed.J)
-				camFollow.velocity.x = -90;
-			else if (FlxG.keys.pressed.L)
-				camFollow.velocity.x = 90;
-			else
-				camFollow.velocity.x = 0;
+			if (FlxG.keys.pressed.J) camFollow.velocity.x = -90;
+			else if (FlxG.keys.pressed.L) camFollow.velocity.x = 90;
+			else camFollow.velocity.x = 0;
 		}
-		else
-		{
-			camFollow.velocity.set();
-		}
+		else camFollow.velocity.set();
 
-		if (FlxG.keys.justPressed.W)
-		{
-			curAnim -= 1;
-		}
-
-		if (FlxG.keys.justPressed.S)
-		{
-			curAnim += 1;
-		}
-
-		if (curAnim < 0)
-			curAnim = animList.length - 1;
-
-		if (curAnim >= animList.length)
-			curAnim = 0;
-
-		if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE)
-		{
+		if (FlxG.keys.justPressed.W) curAnim -= 1;
+		if (FlxG.keys.justPressed.S) curAnim += 1;
+		if (curAnim < 0) curAnim = animList.length - 1;
+		if (curAnim >= animList.length) curAnim = 0;
+		if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE) {
 			char.playAnim(animList[curAnim]);
-
 			updateTexts();
 			genBoyOffsets(false);
 		}
@@ -170,26 +135,17 @@ class AnimationDebug extends FlxState
 
 		var holdShift = FlxG.keys.pressed.SHIFT;
 		var multiplier = 1;
-		if (holdShift)
-			multiplier = 10;
-
-		if (upP || rightP || downP || leftP)
-		{
+		if (holdShift) multiplier = 10;
+		if (upP || rightP || downP || leftP) {
 			updateTexts();
-			if (upP)
-				char.animOffsets.get(animList[curAnim])[1] += 1 * multiplier;
-			if (downP)
-				char.animOffsets.get(animList[curAnim])[1] -= 1 * multiplier;
-			if (leftP)
-				char.animOffsets.get(animList[curAnim])[0] += 1 * multiplier;
-			if (rightP)
-				char.animOffsets.get(animList[curAnim])[0] -= 1 * multiplier;
-
-			updateTexts();
+			if (upP) char.animOffsets.get(animList[curAnim])[1] += 1 * multiplier;
+			if (downP) char.animOffsets.get(animList[curAnim])[1] -= 1 * multiplier;
+			if (leftP) char.animOffsets.get(animList[curAnim])[0] += 1 * multiplier;
+			if (rightP) char.animOffsets.get(animList[curAnim])[0] -= 1 * multiplier;
+			updateTexts(); // WHY ARE THERE TWO UPDATES
 			genBoyOffsets(false);
 			char.playAnim(animList[curAnim]);
 		}
-
 		super.update(elapsed);
 	}
 }
