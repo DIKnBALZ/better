@@ -1,8 +1,6 @@
 package;
 
-#if desktop
-import Discord.DiscordClient;
-#end
+#if desktop import Discord.DiscordClient; #end
 import Section.SwagSection;
 import Song.SwagSong;
 import flixel.FlxCamera;
@@ -27,7 +25,6 @@ import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
 
 using StringTools;
-
 class PlayState extends MusicBeatState
 {
 	public static var curStage:String = '';
@@ -1911,8 +1908,7 @@ class PlayState extends MusicBeatState
 		curSection += 1;
 	}
 
-	private function keyShit():Void
-	{
+	private function keyShit():Void {
 		// HOLDING
 		var up = controls.UP;
 		var right = controls.RIGHT;
@@ -1930,73 +1926,41 @@ class PlayState extends MusicBeatState
 		var leftR = controls.LEFT_R;
 
 		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
-
-		// FlxG.watch.addQuick('asdfa', upP);
-		if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic)
-		{
+		if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic) {
 			boyfriend.holdTimer = 0;
-
 			var possibleNotes:Array<Note> = [];
-
 			var ignoreList:Array<Int> = [];
 
-			notes.forEachAlive(function(daNote:Note)
-			{
-				if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit)
-				{
+			notes.forEachAlive(function(daNote:Note) {
+				if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit) {
 					// the sorting probably doesn't need to be in here? who cares lol
 					possibleNotes.push(daNote);
 					possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
-
 					ignoreList.push(daNote.noteData);
 				}
 			});
 
-			if (possibleNotes.length > 0)
-			{
+			if (possibleNotes.length > 0) {
 				var daNote = possibleNotes[0];
-
-				if (perfectMode)
-					noteCheck(true, daNote);
-
+				if (perfectMode) noteCheck(true, daNote);
 				// Jump notes
-				if (possibleNotes.length >= 2)
-				{
-					if (possibleNotes[0].strumTime == possibleNotes[1].strumTime)
-					{
-						for (coolNote in possibleNotes)
-						{
-							if (controlArray[coolNote.noteData])
-								goodNoteHit(coolNote);
-							else
-							{
+				if (possibleNotes.length >= 2) {
+					if (possibleNotes[0].strumTime == possibleNotes[1].strumTime) {
+						for (coolNote in possibleNotes) {
+							if (controlArray[coolNote.noteData]) goodNoteHit(coolNote);
+							else {
 								var inIgnoreList:Bool = false;
-								for (shit in 0...ignoreList.length)
-								{
-									if (controlArray[ignoreList[shit]])
-										inIgnoreList = true;
+								for (shit in 0...ignoreList.length) {
+									if (controlArray[ignoreList[shit]]) inIgnoreList = true;
 								}
-								if (!inIgnoreList)
-									badNoteCheck();
+								if (!inIgnoreList) badNoteCheck();
 							}
 						}
 					}
-					else if (possibleNotes[0].noteData == possibleNotes[1].noteData)
-					{
-						noteCheck(controlArray[daNote.noteData], daNote);
-					}
-					else
-					{
-						for (coolNote in possibleNotes)
-						{
-							noteCheck(controlArray[coolNote.noteData], coolNote);
-						}
-					}
+					else if (possibleNotes[0].noteData == possibleNotes[1].noteData) noteCheck(controlArray[daNote.noteData], daNote);
+					else for (coolNote in possibleNotes) noteCheck(controlArray[coolNote.noteData], coolNote);
 				}
-				else // regular notes?
-				{
-					noteCheck(controlArray[daNote.noteData], daNote);
-				}
+				else noteCheck(controlArray[daNote.noteData], daNote); // regular notes?
 				/* 
 					if (controlArray[daNote.noteData])
 						goodNoteHit(daNote);
@@ -2028,80 +1992,51 @@ class PlayState extends MusicBeatState
 					}
 				 */
 			}
-			else
-			{
-				badNoteCheck();
-			}
+			else badNoteCheck();
 		}
 
-		if ((up || right || down || left) && !boyfriend.stunned && generatedMusic)
-		{
-			notes.forEachAlive(function(daNote:Note)
-			{
-				if (daNote.canBeHit && daNote.mustPress && daNote.isSustainNote)
-				{
-					switch (daNote.noteData)
-					{
+		if ((up || right || down || left) && !boyfriend.stunned && generatedMusic) {
+			notes.forEachAlive(function(daNote:Note) {
+				if (daNote.canBeHit && daNote.mustPress && daNote.isSustainNote) {
+					switch (daNote.noteData) {
 						// NOTES YOU ARE HOLDING
-						case 0:
-							if (left)
-								goodNoteHit(daNote);
-						case 1:
-							if (down)
-								goodNoteHit(daNote);
-						case 2:
-							if (up)
-								goodNoteHit(daNote);
-						case 3:
-							if (right)
-								goodNoteHit(daNote);
+						case 0: if (left) goodNoteHit(daNote);
+						case 1: if (down) goodNoteHit(daNote);
+						case 2: if (up) goodNoteHit(daNote);
+						case 3: if (right) goodNoteHit(daNote);
 					}
 				}
 			});
 		}
 
-		if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left)
-		{
-			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
-			{
+		if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !up && !down && !right && !left) {
+			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss')) {
 				boyfriend.playAnim('idle');
 			}
 		}
 
-		playerStrums.forEach(function(spr:FlxSprite)
-		{
-			switch (spr.ID)
-			{
+		playerStrums.forEach(function(spr:FlxSprite) {
+			switch (spr.ID) {
 				case 0:
-					if (leftP && spr.animation.curAnim.name != 'confirm')
-						spr.animation.play('pressed');
-					if (leftR)
-						spr.animation.play('static');
+					if (leftP && spr.animation.curAnim.name != 'confirm') spr.animation.play('pressed');
+					if (leftR) spr.animation.play('static');
 				case 1:
-					if (downP && spr.animation.curAnim.name != 'confirm')
-						spr.animation.play('pressed');
-					if (downR)
-						spr.animation.play('static');
+					if (downP && spr.animation.curAnim.name != 'confirm') spr.animation.play('pressed');
+					if (downR) spr.animation.play('static');
 				case 2:
-					if (upP && spr.animation.curAnim.name != 'confirm')
-						spr.animation.play('pressed');
-					if (upR)
-						spr.animation.play('static');
+					if (upP && spr.animation.curAnim.name != 'confirm') spr.animation.play('pressed');
+					if (upR) spr.animation.play('static');
 				case 3:
-					if (rightP && spr.animation.curAnim.name != 'confirm')
-						spr.animation.play('pressed');
-					if (rightR)
-						spr.animation.play('static');
+					if (rightP && spr.animation.curAnim.name != 'confirm') spr.animation.play('pressed');
+					if (rightR) spr.animation.play('static');
 			}
 
-			if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
-			{
+			if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school')) {
 				spr.centerOffsets();
 				spr.offset.x -= 13;
 				spr.offset.y -= 13;
 			}
-			else
-				spr.centerOffsets();
+			else spr.centerOffsets();
 		});
 	}
 
