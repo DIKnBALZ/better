@@ -2,20 +2,23 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 
-class MenuItem extends FlxSpriteGroup {
+class MenuItem extends FlxSpriteGroup
+{
 	public var week:FlxSprite;
-	public function new(x:Float, y:Float, weekNum:Int = 0) {
+
+	public function new(x:Float, y:Float, weekNum:Int = 0)
+	{
 		super(x, y);
 		week = new FlxSprite().loadGraphic(Paths.image('storymenu/week' + weekNum));
 		add(week);
 	}
 
 	private var isFlashing:Bool = false;
+
 	public function startFlashing():Void
 		isFlashing = true;
 
@@ -25,12 +28,18 @@ class MenuItem extends FlxSpriteGroup {
 	// I'm still learning how math works thanks whoever is reading this lol
 	public var targetY:Float = 0;
 	public var flashingInt:Int = 0;
+
 	var fakeFramerate:Int = Math.round((1 / FlxG.elapsed) / 10);
-	override function update(elapsed:Float) {
+
+	override function update(elapsed:Float)
+	{
 		super.update(elapsed);
 		y = FlxMath.lerp(y, (targetY * 120) + 480, 0.17);
-		if (isFlashing) flashingInt += 1;
-		if (flashingInt % fakeFramerate >= Math.floor(fakeFramerate / 2)) week.color = 0xFF33ffff;
-		else week.color = FlxColor.WHITE;
+		if (isFlashing)
+			flashingInt += 1;
+		if (flashingInt % fakeFramerate >= Math.floor(fakeFramerate / 2))
+			week.color = 0xFF33ffff;
+		else
+			week.color = FlxColor.WHITE;
 	}
 }

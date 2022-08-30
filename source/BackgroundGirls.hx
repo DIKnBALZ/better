@@ -1,10 +1,11 @@
 package;
 
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 
-class BackgroundGirls extends FlxSprite {
-	public function new(x:Float, y:Float) {
+class BackgroundGirls extends FlxSprite
+{
+	public function new(x:Float, y:Float)
+	{
 		super(x, y);
 		frames = Paths.getSparrowAtlas('weeb/bgFreaks');
 
@@ -13,16 +14,21 @@ class BackgroundGirls extends FlxSprite {
 		animation.play('danceLeft');
 	}
 
-	public function getScared():Void {
+	public function getScared():Void
+	{
 		animation.addByIndices('danceLeft', 'BG fangirls dissuaded', CoolUtil.numberArray(14), "", 24, false);
 		animation.addByIndices('danceRight', 'BG fangirls dissuaded', CoolUtil.numberArray(30, 15), "", 24, false);
 		dance();
 	}
 
 	var danceDir:Bool = false;
-	public function dance():Void {
+
+	public function dance():Void
+	{
 		danceDir = !danceDir;
-		if (danceDir) animation.play('danceRight', true);
-		else animation.play('danceLeft', true);
+		if (danceDir)
+			animation.play('danceRight', true);
+		else
+			animation.play('danceLeft', true);
 	}
 }

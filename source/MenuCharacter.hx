@@ -1,11 +1,13 @@
 package;
 
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 
-class MenuCharacter extends FlxSprite {
+class MenuCharacter extends FlxSprite
+{
 	public var character:String;
-	public function new(x:Float, character:String = 'bf') {
+
+	public function new(x:Float, character:String = 'bf')
+	{
 		super(x);
 		this.character = character;
 		frames = Paths.getSparrowAtlas('campaign_menu_UI_characters');

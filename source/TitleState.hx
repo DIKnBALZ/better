@@ -1,34 +1,23 @@
 package;
 
-#if desktop
-	import Discord.DiscordClient;
-	import sys.thread.Thread;
-#end
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
 import flixel.graphics.FlxGraphic;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.system.FlxSound;
-import flixel.system.ui.FlxSoundTray;
-import flixel.text.FlxText;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-import lime.app.Application;
 import openfl.Assets;
 
 using StringTools;
-class TitleState extends MusicBeatState {
+
+class TitleState extends MusicBeatState
+{
 	var credGroup:FlxGroup;
 	var textGroup:FlxGroup; // not sure what these 2 are for ngl
 
@@ -38,10 +27,12 @@ class TitleState extends MusicBeatState {
 	var logo:FlxSprite;
 	var girlfriend:FlxSprite;
 	var titleText:FlxSprite;
-	
+
 	var danceLeft:Bool = false;
 	var initialized:Bool = false;
-	override public function create():Void {
+
+	override public function create():Void
+	{
 		PlayerSettings.init();
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 		super.create();
@@ -49,15 +40,13 @@ class TitleState extends MusicBeatState {
 		FlxG.save.bind('funkin', 'ninjamuffin99');
 		Highscore.load();
 
-		if (FlxG.save.data.weekUnlocked != null) {
-			if (StoryMenuState.weekUnlocked.length < 4) StoryMenuState.weekUnlocked.insert(0, true);
-			if (!StoryMenuState.weekUnlocked[0]) StoryMenuState.weekUnlocked[0] = true;
+		if (FlxG.save.data.weekUnlocked != null)
+		{
+			if (StoryMenuState.weekUnlocked.length < 4)
+				StoryMenuState.weekUnlocked.insert(0, true);
+			if (!StoryMenuState.weekUnlocked[0])
+				StoryMenuState.weekUnlocked[0] = true;
 		}
-
-		#if desktop
-			DiscordClient.initialize();
-			Application.current.onExit.add(function(exitCode) {DiscordClient.shutdown();});
-		#end
 
 		girlfriend = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
 		girlfriend.frames = Paths.getSparrowAtlas('gfDanceTitle');
@@ -99,17 +88,24 @@ class TitleState extends MusicBeatState {
 		newgroundsLogo.updateHitbox();
 		newgroundsLogo.screenCenter(X);
 
-		new FlxTimer().start(1, function(tmr:FlxTimer) {startIntro();});
+		new FlxTimer().start(1, function(tmr:FlxTimer)
+		{
+			startIntro();
+		});
 	}
 
-	function startIntro() {
-		if (!initialized) {
+	function startIntro()
+	{
+		if (!initialized)
+		{
 			var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
 			diamond.persist = true;
 			diamond.destroyOnNoUse = false;
 
-			FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 1, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32}, new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
-			FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, 1), {asset: diamond, width: 32, height: 32}, new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
+			FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 1, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
+				new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
+			FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, 1),
+				{asset: diamond, width: 32, height: 32}, new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
 			transIn = FlxTransitionableState.defaultTransIn;
 			transOut = FlxTransitionableState.defaultTransOut;
 
@@ -121,53 +117,73 @@ class TitleState extends MusicBeatState {
 		persistentUpdate = true; // ???
 
 		FlxG.mouse.visible = false;
-		if (initialized) skipIntro();
-		else initialized = true;
+		if (initialized)
+			skipIntro();
+		else
+			initialized = true;
 	}
 
-	function getIntroTextShit():Array<Array<String>> {
+	function getIntroTextShit():Array<Array<String>>
+	{
 		var fullText:String = Assets.getText(Paths.txt('introText'));
 		var firstArray:Array<String> = fullText.split('\n');
 		var swagGoodArray:Array<Array<String>> = [];
-		for (i in firstArray) swagGoodArray.push(i.split('--'));
+		for (i in firstArray)
+			swagGoodArray.push(i.split('--'));
 		return swagGoodArray;
 	}
 
 	var transitioning:Bool = false;
-	override function update(elapsed:Float) {
-		if (FlxG.sound.music != null) Conductor.songPosition = FlxG.sound.music.time;
-		if (FlxG.keys.justPressed.F) FlxG.fullscreen = !FlxG.fullscreen;
+
+	override function update(elapsed:Float)
+	{
+		if (FlxG.sound.music != null)
+			Conductor.songPosition = FlxG.sound.music.time;
+		if (FlxG.keys.justPressed.F)
+			FlxG.fullscreen = !FlxG.fullscreen;
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
 
 		#if mobile
-			for (touch in FlxG.touches.list) {
-				if (touch.justPressed) pressedEnter = true;
-			}
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.justPressed)
+				pressedEnter = true;
+		}
 		#end
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-		if (gamepad != null) {
-			if (gamepad.justPressed.START) pressedEnter = true;
+		if (gamepad != null)
+		{
+			if (gamepad.justPressed.START)
+				pressedEnter = true;
 
 			#if switch
-				if (gamepad.justPressed.B) pressedEnter = true;
+			if (gamepad.justPressed.B)
+				pressedEnter = true;
 			#end
 		}
 
-		if (pressedEnter && !transitioning && skippedIntro) {
+		if (pressedEnter && !transitioning && skippedIntro)
+		{
 			FlxG.camera.flash(FlxColor.WHITE, 1);
 			FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
 			titleText.animation.play('press');
 			transitioning = true;
-			new FlxTimer().start(2, function(tmr:FlxTimer) {FlxG.switchState(new MainMenuState());});
+			new FlxTimer().start(2, function(tmr:FlxTimer)
+			{
+				FlxG.switchState(new MainMenuState());
+			});
 		}
 
-		if (pressedEnter && !skippedIntro) skipIntro();
+		if (pressedEnter && !skippedIntro)
+			skipIntro();
 		super.update(elapsed);
 	}
 
-	function createCoolText(textArray:Array<String>) {
-		for (i in 0...textArray.length) {
+	function createCoolText(textArray:Array<String>)
+	{
+		for (i in 0...textArray.length)
+		{
 			var money:Alphabet = new Alphabet(0, 0, textArray[i], true, false);
 			money.screenCenter(X);
 			money.y += (i * 60) + 200;
@@ -176,7 +192,8 @@ class TitleState extends MusicBeatState {
 		}
 	}
 
-	function addMoreText(text:String) {
+	function addMoreText(text:String)
+	{
 		var coolText:Alphabet = new Alphabet(0, 0, text, true, false);
 		coolText.screenCenter(X);
 		coolText.y += (textGroup.length * 60) + 200;
@@ -184,44 +201,64 @@ class TitleState extends MusicBeatState {
 		textGroup.add(coolText);
 	}
 
-	function deleteCoolText() {
-		while (textGroup.members.length > 0) {
+	function deleteCoolText()
+	{
+		while (textGroup.members.length > 0)
+		{
 			credGroup.remove(textGroup.members[0], true);
 			textGroup.remove(textGroup.members[0], true);
 		}
 	}
 
-	override function beatHit() {
+	override function beatHit()
+	{
 		super.beatHit();
 		logo.animation.play('bump');
 		danceLeft = !danceLeft;
-		if (danceLeft) girlfriend.animation.play('danceRight');
-		else girlfriend.animation.play('danceLeft');
+		if (danceLeft)
+			girlfriend.animation.play('danceRight');
+		else
+			girlfriend.animation.play('danceLeft');
 
-		switch (curBeat) {
-			case 1: createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
-			case 3: addMoreText('present');
-			case 4: deleteCoolText();
-			case 5: createCoolText(['In association', 'with']);
+		switch (curBeat)
+		{
+			case 1:
+				createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
+			case 3:
+				addMoreText('present');
+			case 4:
+				deleteCoolText();
+			case 5:
+				createCoolText(['In association', 'with']);
 			case 7:
 				addMoreText('newgrounds');
 				newgroundsLogo.visible = true;
 			case 8:
 				deleteCoolText();
 				newgroundsLogo.visible = false;
-			case 9: createCoolText([curWacky[0]]);
-			case 11: addMoreText(curWacky[1]);
-			case 12: deleteCoolText();
-			case 13: addMoreText('Friday');
-			case 14: addMoreText('Night');
-			case 15: addMoreText('Funkin');
-			case 16: skipIntro();
+			case 9:
+				createCoolText([curWacky[0]]);
+			case 11:
+				addMoreText(curWacky[1]);
+			case 12:
+				deleteCoolText();
+			case 13:
+				addMoreText('Friday');
+			case 14:
+				addMoreText('Night');
+			case 15:
+				addMoreText('Funkin');
+			case 16:
+				skipIntro();
 		}
 	}
 
 	var skippedIntro:Bool = false;
-	function skipIntro():Void {
-		if (!skippedIntro) {
+
+	function skipIntro():Void
+	{
+		if (!skippedIntro)
+		{
 			FlxG.camera.flash(FlxColor.WHITE, 4);
 			remove(newgroundsLogo);
 			remove(credGroup);
