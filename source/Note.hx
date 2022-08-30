@@ -5,13 +5,11 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 #if polymod
-import polymod.format.ParseRules.TargetSignatureElement;
+	import polymod.format.ParseRules.TargetSignatureElement;
 #end
 
 using StringTools;
-
-class Note extends FlxSprite
-{
+class Note extends FlxSprite {
 	public var strumTime:Float = 0;
 
 	public var mustPress:Bool = false;
@@ -32,27 +30,18 @@ class Note extends FlxSprite
 	public static var BLUE_NOTE:Int = 1;
 	public static var RED_NOTE:Int = 3;
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false)
-	{
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false) {
 		super();
-
-		if (prevNote == null)
-			prevNote = this;
-
+		if (prevNote == null) prevNote = this;
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
-
 		x += 50;
-		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
 		this.strumTime = strumTime;
-
 		this.noteData = noteData;
 
 		var daStage:String = PlayState.curStage;
-
-		switch (daStage)
-		{
+		switch (daStage) {
 			case 'school' | 'schoolEvil':
 				loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
 
@@ -61,8 +50,7 @@ class Note extends FlxSprite
 				animation.add('blueScroll', [5]);
 				animation.add('purpleScroll', [4]);
 
-				if (isSustainNote)
-				{
+				if (isSustainNote) {
 					loadGraphic(Paths.image('weeb/pixelUI/arrowEnds'), true, 7, 6);
 
 					animation.add('purpleholdend', [4]);
@@ -78,9 +66,9 @@ class Note extends FlxSprite
 
 				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 				updateHitbox();
-
 			default:
 				frames = Paths.getSparrowAtlas('NOTE_assets');
+				antialiasing = true;
 
 				animation.addByPrefix('greenScroll', 'green0');
 				animation.addByPrefix('redScroll', 'red0');
@@ -99,11 +87,8 @@ class Note extends FlxSprite
 
 				setGraphicSize(Std.int(width * 0.7));
 				updateHitbox();
-				antialiasing = true;
 		}
-
-		switch (noteData)
-		{
+		switch (noteData) {
 			case 0:
 				x += swagWidth * 0;
 				animation.play('purpleScroll');
@@ -117,84 +102,44 @@ class Note extends FlxSprite
 				x += swagWidth * 3;
 				animation.play('redScroll');
 		}
-
-		// trace(prevNote);
-
-		if (isSustainNote && prevNote != null)
-		{
+		if (isSustainNote && prevNote != null) {
 			noteScore * 0.2;
 			alpha = 0.6;
-
 			x += width / 2;
-
-			switch (noteData)
-			{
-				case 2:
-					animation.play('greenholdend');
-				case 3:
-					animation.play('redholdend');
-				case 1:
-					animation.play('blueholdend');
-				case 0:
-					animation.play('purpleholdend');
+			switch (noteData) {
+				case 2: animation.play('greenholdend');
+				case 3: animation.play('redholdend');
+				case 1: animation.play('blueholdend');
+				case 0: animation.play('purpleholdend');
 			}
-
 			updateHitbox();
-
 			x -= width / 2;
-
-			if (PlayState.curStage.startsWith('school'))
-				x += 30;
-
-			if (prevNote.isSustainNote)
-			{
-				switch (prevNote.noteData)
-				{
-					case 0:
-						prevNote.animation.play('purplehold');
-					case 1:
-						prevNote.animation.play('bluehold');
-					case 2:
-						prevNote.animation.play('greenhold');
-					case 3:
-						prevNote.animation.play('redhold');
+			if (PlayState.curStage.startsWith('school')) x += 30;
+			if (prevNote.isSustainNote) {
+				switch (prevNote.noteData) {
+					case 0: prevNote.animation.play('purplehold');
+					case 1: prevNote.animation.play('bluehold');
+					case 2: prevNote.animation.play('greenhold');
+					case 3: prevNote.animation.play('redhold');
 				}
-
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
 				prevNote.updateHitbox();
-				// prevNote.setGraphicSize();
 			}
 		}
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
-
-		if (mustPress)
-		{
-			// The * 0.5 is so that it's easier to hit them too late, instead of too early
+		if (mustPress) {
 			if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset
 				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * 0.5))
 				canBeHit = true;
-			else
-				canBeHit = false;
-
-			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset && !wasGoodHit)
-				tooLate = true;
-		}
-		else
-		{
+			else canBeHit = false; // The * 0.5 is so that it's easier to hit them too late, instead of too early
+			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset && !wasGoodHit) tooLate = true;
+		} else {
 			canBeHit = false;
-
-			if (strumTime <= Conductor.songPosition)
-				wasGoodHit = true;
+			if (strumTime <= Conductor.songPosition) wasGoodHit = true;
 		}
-
-		if (tooLate)
-		{
-			if (alpha > 0.3)
-				alpha = 0.3;
-		}
+		if (tooLate && alpha > 0.3) alpha = 0.3;
 	}
 }
