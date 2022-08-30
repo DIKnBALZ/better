@@ -907,143 +907,82 @@ class ChartingState extends MusicBeatState
 		updateNoteUI();
 	}
 
-	function deleteNote(note:Note):Void
-	{
-		for (i in _song.notes[curSection].sectionNotes)
-		{
-			if (i[0] == note.strumTime && i[1] % 4 == note.noteData)
-			{
+	// optomize all above !!! :D -wizard
+
+	function deleteNote(note:Note):Void {
+		for (i in _song.notes[curSection].sectionNotes) {
+			if (i[0] == note.strumTime && i[1] % 4 == note.noteData) {
 				FlxG.log.add('FOUND EVIL NUMBER');
 				_song.notes[curSection].sectionNotes.remove(i);
 			}
 		}
-
 		updateGrid();
 	}
 
-	function clearSection():Void
-	{
+	function clearSection():Void {
 		_song.notes[curSection].sectionNotes = [];
-
 		updateGrid();
 	}
 
-	function clearSong():Void
-	{
-		for (daSection in 0..._song.notes.length)
-		{
-			_song.notes[daSection].sectionNotes = [];
-		}
-
+	function clearSong():Void {
+		for (daSection in 0..._song.notes.length) _song.notes[daSection].sectionNotes = [];
 		updateGrid();
 	}
 
-	private function addNote():Void
-	{
+	private function addNote():Void {
 		var noteStrum = getStrumTime(dummyArrow.y) + sectionStartTime();
 		var noteData = Math.floor(FlxG.mouse.x / GRID_SIZE);
 		var noteSus = 0;
 
 		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus]);
-
 		curSelectedNote = _song.notes[curSection].sectionNotes[_song.notes[curSection].sectionNotes.length - 1];
-
-		if (FlxG.keys.pressed.CONTROL)
-		{
-			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus]);
-		}
+		if (FlxG.keys.pressed.CONTROL) _song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus]);
 
 		trace(noteStrum);
 		trace(curSection);
 
 		updateGrid();
 		updateNoteUI();
-
 		autosaveSong();
 	}
 
-	function getStrumTime(yPos:Float):Float
-	{
+	function getStrumTime(yPos:Float):Float {
 		return FlxMath.remapToRange(yPos, gridBG.y, gridBG.y + gridBG.height, 0, 16 * Conductor.stepCrochet);
 	}
 
-	function getYfromStrum(strumTime:Float):Float
-	{
+	function getYfromStrum(strumTime:Float):Float {
 		return FlxMath.remapToRange(strumTime, 0, 16 * Conductor.stepCrochet, gridBG.y, gridBG.y + gridBG.height);
 	}
 
-	/*
-		function calculateSectionLengths(?sec:SwagSection):Int
-		{
-			var daLength:Int = 0;
-
-			for (i in _song.notes)
-			{
-				var swagLength = i.lengthInSteps;
-
-				if (i.typeOfSection == Section.COPYCAT)
-					swagLength * 2;
-
-				daLength += swagLength;
-
-				if (sec != null && sec == i)
-				{
-					trace('swag loop??');
-					break;
-				}
-			}
-
-			return daLength;
-	}*/
-	private var daSpacing:Float = 0.3;
-
-	function loadLevel():Void
-	{
+	function loadLevel():Void {
 		trace(_song.notes);
 	}
 
-	function getNotes():Array<Dynamic>
-	{
+	function getNotes():Array<Dynamic> {
 		var noteData:Array<Dynamic> = [];
-
-		for (i in _song.notes)
-		{
-			noteData.push(i.sectionNotes);
-		}
-
+		for (i in _song.notes) noteData.push(i.sectionNotes);
 		return noteData;
 	}
 
-	function loadJson(song:String):Void
-	{
+	function loadJson(song:String):Void {
 		PlayState.SONG = Song.loadFromJson(song.toLowerCase(), song.toLowerCase());
 		FlxG.resetState();
 	}
 
-	function loadAutosave():Void
-	{
+	function loadAutosave():Void {
 		PlayState.SONG = Song.parseJSONshit(FlxG.save.data.autosave);
 		FlxG.resetState();
 	}
 
-	function autosaveSong():Void
-	{
-		FlxG.save.data.autosave = Json.stringify({
-			"song": _song
-		});
+	function autosaveSong():Void {
+		FlxG.save.data.autosave = Json.stringify({"song": _song});
 		FlxG.save.flush();
 	}
 
-	private function saveLevel()
-	{
-		var json = {
-			"song": _song
-		};
-
+	private function saveLevel() {
+		var json = {"song": _song};
 		var data:String = Json.stringify(json);
-
-		if ((data != null) && (data.length > 0))
-		{
+		if ((data != null) && (data.length > 0)) {
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
@@ -1052,8 +991,7 @@ class ChartingState extends MusicBeatState
 		}
 	}
 
-	function onSaveComplete(_):Void
-	{
+	function onSaveComplete(_):Void {
 		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
 		_file.removeEventListener(Event.CANCEL, onSaveCancel);
 		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
@@ -1061,22 +999,14 @@ class ChartingState extends MusicBeatState
 		FlxG.log.notice("Successfully saved LEVEL DATA.");
 	}
 
-	/**
-	 * Called when the save file dialog is cancelled.
-	 */
-	function onSaveCancel(_):Void
-	{
+	function onSaveCancel(_):Void {
 		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
 		_file.removeEventListener(Event.CANCEL, onSaveCancel);
 		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 		_file = null;
 	}
 
-	/**
-	 * Called if there is an error while saving the gameplay recording.
-	 */
-	function onSaveError(_):Void
-	{
+	function onSaveError(_):Void {
 		_file.removeEventListener(Event.COMPLETE, onSaveComplete);
 		_file.removeEventListener(Event.CANCEL, onSaveCancel);
 		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
