@@ -1,6 +1,4 @@
 package;
-
-class Options
-{
+class Options {
 	public static var masterVolume:Float = 1;
 }

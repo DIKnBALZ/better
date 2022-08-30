@@ -10,7 +10,6 @@ import flixel.util.FlxTimer;
 using StringTools;
 
 class Alphabet extends FlxSpriteGroup {
-	public var delay:Float = 0.05;
 	public var paused:Bool = false;
 
 	public var targetY:Float = 0;

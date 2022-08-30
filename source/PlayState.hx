@@ -25,16 +25,13 @@ import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
 
 using StringTools;
-class PlayState extends MusicBeatState
-{
+class PlayState extends MusicBeatState {
 	public static var curStage:String = '';
 	public static var SONG:SwagSong;
 	public static var isStoryMode:Bool = false;
 	public static var storyWeek:Int = 0;
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
-
-	var halloweenLevel:Bool = false;
 
 	private var vocals:FlxSound;
 
@@ -212,7 +209,6 @@ class PlayState extends MusicBeatState
                         case 'spookeez' | 'monster' | 'south': 
                         {
                                 curStage = 'spooky';
-	                          halloweenLevel = true;
 
 		                  var hallowTex = Paths.getSparrowAtlas('halloween_bg');
 
