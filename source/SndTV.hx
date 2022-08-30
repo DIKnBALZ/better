@@ -307,25 +307,15 @@ class SndTV {
 		if ( tlist.length > 0 ) {
 			for (t in tlist.backWardIterator() ) {
 				var dist = t.to-t.from;
-				if (t.type==TRand)
-					t.ln+=if(Std.random(100)<33) t.speed * tmod else 0;
-				else
-					t.ln += t.speed * tmod;
-					
+				if (t.type==TRand) t.ln+=if(Std.random(100)<33) t.speed * tmod else 0;
+				else t.ln += t.speed * tmod;
 				t.n = h2d.Tweenie.interp(t.type, t.ln);
-				
 				if ( t.ln<1 ) {
-					// en cours...
 					var val = t.from + t.n*dist;
-					
 					t.apply(val);
-					
 					onUpdate(t, t.ln);
 				}
-				else // fini !
-				{
-					terminateTween(t, true);
-				}
+				else terminateTween(t, true);
 			}
 		}
 	}
