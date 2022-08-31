@@ -42,6 +42,7 @@ class PlayState extends MusicBeatState
 
 	private var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
+	private var splashes:Array<NoteSplash> = [];
 
 	private var strumLine:FlxSprite;
 	private var curSection:Int = 0;
@@ -1324,6 +1325,13 @@ class PlayState extends MusicBeatState
 			}
 
 			// Conductor.lastSongPos = FlxG.sound.music.time;
+
+			for (splash in splashes)
+				if (splash.animation.finished)
+				{
+					remove(splash);
+					splashes.remove(splash);
+				}
 		}
 
 		if (generatedMusic && PlayState.SONG.notes[Std.int(curStep / 16)] != null)
@@ -1435,7 +1443,7 @@ class PlayState extends MusicBeatState
 		if (controls.CHEAT)
 		{
 			health += 1;
-			trace("User is cheating!");
+			trace("User is cheating! (how)");
 		}
 
 		if (health <= 0)
@@ -1639,7 +1647,7 @@ class PlayState extends MusicBeatState
 
 	var endingSong:Bool = false;
 
-	private function popUpScore(strumtime:Float):Void
+	private function popUpScore(strumtime:Float, note:Note):Void
 	{
 		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
 		// boyfriend.playAnim('hey');
@@ -1667,10 +1675,18 @@ class PlayState extends MusicBeatState
 			daRating = 'bad';
 			score = 100;
 		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.2)
+		else if (noteDiff > Conductor.safeZoneOffset * 0.25)
 		{
 			daRating = 'good';
 			score = 200;
+		}
+		if (daRating == 'sick')
+		{
+			var splash:NoteSplash = new NoteSplash(playerStrums.members[note.noteData].x, playerStrums.members[note.noteData].y, note.noteData);
+			splash.cameras = [camHUD];
+			add(splash);
+			splashes.push(splash);
+			splash.animation.play('' + ${note.noteData} + ${FlxG.random.int(1, 2)}, true);
 		}
 
 		songScore += score;
@@ -1796,20 +1812,20 @@ class PlayState extends MusicBeatState
 	private function keyShit():Void
 	{
 		// HOLDING
-		var up = controls.UP;
-		var right = controls.RIGHT;
-		var down = controls.DOWN;
-		var left = controls.LEFT;
+		var up = FlxG.keys.firstPressed() == CoolUtil.upKeybind;
+		var right = FlxG.keys.firstPressed() == CoolUtil.rightKeybind;
+		var down = FlxG.keys.firstPressed() == CoolUtil.downKeybind;
+		var left = FlxG.keys.firstPressed() == CoolUtil.leftKeybind;
 
-		var upP = controls.UP_P;
-		var rightP = controls.RIGHT_P;
-		var downP = controls.DOWN_P;
-		var leftP = controls.LEFT_P;
+		var upP = FlxG.keys.firstJustPressed() == CoolUtil.upKeybind;
+		var rightP = FlxG.keys.firstJustPressed() == CoolUtil.rightKeybind;
+		var downP = FlxG.keys.firstJustPressed() == CoolUtil.downKeybind;
+		var leftP = FlxG.keys.firstJustPressed() == CoolUtil.leftKeybind;
 
-		var upR = controls.UP_R;
-		var rightR = controls.RIGHT_R;
-		var downR = controls.DOWN_R;
-		var leftR = controls.LEFT_R;
+		var upR = FlxG.keys.firstJustReleased() == CoolUtil.upKeybind;
+		var rightR = FlxG.keys.firstJustReleased() == CoolUtil.rightKeybind;
+		var downR = FlxG.keys.firstJustReleased() == CoolUtil.downKeybind;
+		var leftR = FlxG.keys.firstJustReleased() == CoolUtil.leftKeybind;
 
 		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
 		if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic)
@@ -2013,18 +2029,18 @@ class PlayState extends MusicBeatState
 	{
 		// just double pasting this shit cuz fuk u
 		// REDO THIS SYSTEM!
-		var upP = controls.UP_P;
-		var rightP = controls.RIGHT_P;
-		var downP = controls.DOWN_P;
-		var leftP = controls.LEFT_P;
+		var upP = FlxG.keys.firstJustPressed() == CoolUtil.upKeybind;
+		var rightP = FlxG.keys.firstJustPressed() == CoolUtil.rightKeybind;
+		var downP = FlxG.keys.firstJustPressed() == CoolUtil.downKeybind;
+		var leftP = FlxG.keys.firstJustPressed() == CoolUtil.leftKeybind;
 
-		if (leftP)
+		if (leftP && !CoolUtil.ghostTapping)
 			noteMiss(0);
-		if (downP)
+		if (downP && !CoolUtil.ghostTapping)
 			noteMiss(1);
-		if (upP)
+		if (upP && !CoolUtil.ghostTapping)
 			noteMiss(2);
-		if (rightP)
+		if (rightP && !CoolUtil.ghostTapping)
 			noteMiss(3);
 	}
 
@@ -2044,7 +2060,7 @@ class PlayState extends MusicBeatState
 		{
 			if (!note.isSustainNote)
 			{
-				popUpScore(note.strumTime);
+				popUpScore(note.strumTime, note);
 				combo += 1;
 			}
 

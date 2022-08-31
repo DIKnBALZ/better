@@ -12,12 +12,15 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 
-class OptionsMenu extends MusicBeatState {
+class OptionsMenu extends MusicBeatState
+{
 	var selector:FlxText;
 	var curSelected:Int = 0;
 	var controlsStrings:Array<String> = [];
 	private var grpControls:FlxTypedGroup<Alphabet>;
-	override function create() {
+
+	override function create()
+	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		controlsStrings = CoolUtil.coolTextFile(Paths.txt('controls'));
 		menuBG.color = 0xFFea71fd;
@@ -31,32 +34,43 @@ class OptionsMenu extends MusicBeatState {
 		openSubState(new OptionsSubState());
 	}
 
-	override function update(elapsed:Float) {
+	override function update(elapsed:Float)
+	{
 		super.update(elapsed);
 	}
 
-	function waitingInput():Void {
-		if (FlxG.keys.getIsDown().length > 0) PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxG.keys.getIsDown()[0].ID, null);
+	function waitingInput():Void
+	{
+		if (FlxG.keys.getIsDown().length > 0)
+			PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxG.keys.getIsDown()[0].ID, null);
 	}
 
 	var isSettingControl:Bool = false;
-	function changeBinding():Void {
-		if (!isSettingControl) isSettingControl = true;
+
+	function changeBinding():Void
+	{
+		if (!isSettingControl)
+			isSettingControl = true;
 	}
 
-	function changeSelection(change:Int = 0) {
+	function changeSelection(change:Int = 0)
+	{
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
 		curSelected += change;
-		if (curSelected < 0) curSelected = grpControls.length - 1;
-		if (curSelected >= grpControls.length) curSelected = 0;
+		if (curSelected < 0)
+			curSelected = grpControls.length - 1;
+		if (curSelected >= grpControls.length)
+			curSelected = 0;
 
 		var bullShit:Int = 0;
-		for (item in grpControls.members) {
+		for (item in grpControls.members)
+		{
 			item.targetY = bullShit - curSelected;
 			bullShit++;
 			item.alpha = 0.6;
-			if (item.targetY == 0) item.alpha = 1;
+			if (item.targetY == 0)
+				item.alpha = 1;
 		}
 	}
 }

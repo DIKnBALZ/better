@@ -9,7 +9,6 @@ import flixel.input.actions.FlxActionSet;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
 
-#if (haxe >= "4.0.0")
 enum abstract Action(String) to String from String
 {
 	var UP = "up";
@@ -30,29 +29,6 @@ enum abstract Action(String) to String from String
 	var RESET = "reset";
 	var CHEAT = "cheat";
 }
-#else
-@:enum
-abstract Action(String) to String from String
-{
-	var UP = "up";
-	var LEFT = "left";
-	var RIGHT = "right";
-	var DOWN = "down";
-	var UP_P = "up-press";
-	var LEFT_P = "left-press";
-	var RIGHT_P = "right-press";
-	var DOWN_P = "down-press";
-	var UP_R = "up-release";
-	var LEFT_R = "left-release";
-	var RIGHT_R = "right-release";
-	var DOWN_R = "down-release";
-	var ACCEPT = "accept";
-	var BACK = "back";
-	var PAUSE = "pause";
-	var RESET = "reset";
-	var CHEAT = "cheat";
-}
-#end
 
 enum Device
 {
@@ -83,23 +59,23 @@ enum KeyboardScheme
 
 class Controls extends FlxActionSet
 {
-	var _up = new FlxActionDigital(Action.UP);
-	var _left = new FlxActionDigital(Action.LEFT);
-	var _right = new FlxActionDigital(Action.RIGHT);
-	var _down = new FlxActionDigital(Action.DOWN);
-	var _upP = new FlxActionDigital(Action.UP_P);
-	var _leftP = new FlxActionDigital(Action.LEFT_P);
-	var _rightP = new FlxActionDigital(Action.RIGHT_P);
-	var _downP = new FlxActionDigital(Action.DOWN_P);
-	var _upR = new FlxActionDigital(Action.UP_R);
-	var _leftR = new FlxActionDigital(Action.LEFT_R);
-	var _rightR = new FlxActionDigital(Action.RIGHT_R);
-	var _downR = new FlxActionDigital(Action.DOWN_R);
-	var _accept = new FlxActionDigital(Action.ACCEPT);
-	var _back = new FlxActionDigital(Action.BACK);
-	var _pause = new FlxActionDigital(Action.PAUSE);
-	var _reset = new FlxActionDigital(Action.RESET);
-	var _cheat = new FlxActionDigital(Action.CHEAT);
+	static var _up = new FlxActionDigital(Action.UP);
+	static var _left = new FlxActionDigital(Action.LEFT);
+	static var _right = new FlxActionDigital(Action.RIGHT);
+	static var _down = new FlxActionDigital(Action.DOWN);
+	static var _upP = new FlxActionDigital(Action.UP_P);
+	static var _leftP = new FlxActionDigital(Action.LEFT_P);
+	static var _rightP = new FlxActionDigital(Action.RIGHT_P);
+	static var _downP = new FlxActionDigital(Action.DOWN_P);
+	static var _upR = new FlxActionDigital(Action.UP_R);
+	static var _leftR = new FlxActionDigital(Action.LEFT_R);
+	static var _rightR = new FlxActionDigital(Action.RIGHT_R);
+	static var _downR = new FlxActionDigital(Action.DOWN_R);
+	static var _accept = new FlxActionDigital(Action.ACCEPT);
+	static var _back = new FlxActionDigital(Action.BACK);
+	static var _pause = new FlxActionDigital(Action.PAUSE);
+	static var _reset = new FlxActionDigital(Action.RESET);
+	static var _cheat = new FlxActionDigital(Action.CHEAT);
 
 	#if (haxe >= "4.0.0")
 	var byName:Map<String, FlxActionDigital> = [];
@@ -306,7 +282,7 @@ class Controls extends FlxActionSet
 	 * @param func
 	 * @return ->Void)
 	 */
-	function forEachBound(control:Control, func:FlxActionDigital->FlxInputState->Void)
+	static function forEachBound(control:Control, func:FlxActionDigital->FlxInputState->Void)
 	{
 		switch (control)
 		{
@@ -420,7 +396,7 @@ class Controls extends FlxActionSet
 		}
 	}
 
-	public function bindKeys(control:Control, keys:Array<FlxKey>)
+	public static function bindKeys(control:Control, keys:Array<FlxKey>)
 	{
 		#if (haxe >= "4.0.0")
 		inline forEachBound(control, (action, state) -> addKeys(action, keys, state));
@@ -429,7 +405,7 @@ class Controls extends FlxActionSet
 		#end
 	}
 
-	public function unbindKeys(control:Control, keys:Array<FlxKey>)
+	public static function unbindKeys(control:Control, keys:Array<FlxKey>)
 	{
 		#if (haxe >= "4.0.0")
 		inline forEachBound(control, (action, _) -> removeKeys(action, keys));

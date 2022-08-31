@@ -1,5 +1,6 @@
 package;
 
+import flixel.input.keyboard.FlxKey;
 import lime.utils.Assets;
 
 using StringTools;
@@ -7,6 +8,13 @@ using StringTools;
 class CoolUtil
 {
 	public static var difficultyArray:Array<String> = ['EASY', "NORMAL", "HARD"];
+
+	public static var leftKeybind:FlxKey = 65;
+	public static var downKeybind:FlxKey = 83;
+	public static var upKeybind:FlxKey = 87;
+	public static var rightKeybind:FlxKey = 68;
+	public static var downscroll:Bool = false;
+	public static var ghostTapping:Bool = false;
 
 	public static function difficultyString():String
 	{
