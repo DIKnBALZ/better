@@ -355,10 +355,9 @@ class Character extends FlxSprite
 				addOffset("singRIGHT");
 				addOffset("singRIGHTmiss");
 
-				width -= 100; // man i gotta look into this why tf is this here >:(
-				height -= 100;
-
 				setGraphicSize(Std.int(width * 6));
+				width -= 100;
+				height -= 100;
 				updateHitbox();
 				playAnim('idle');
 			case 'bf-pixel-dead':
