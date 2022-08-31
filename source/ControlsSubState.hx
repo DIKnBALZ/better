@@ -84,11 +84,13 @@ class ControlsSubState extends MusicBeatSubstate
 				CoolUtil.downKeybind = keyArray[1];
 				CoolUtil.upKeybind = keyArray[2];
 				CoolUtil.rightKeybind = keyArray[3];
+				CoolUtil.updatePrefs();
 			}
 		}
 
 		if (controls.BACK)
 		{
+			CoolUtil.updatePrefs();
 			FlxG.state.closeSubState();
 			FlxG.state.openSubState(new OptionsSubState());
 		}

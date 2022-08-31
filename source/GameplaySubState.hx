@@ -62,6 +62,7 @@ class GameplaySubState extends MusicBeatSubstate
 					enableDownscroll = !enableDownscroll;
 					downscroll.text = 'Downscroll: ${enableDownscroll}';
 					CoolUtil.downscroll = enableDownscroll;
+					CoolUtil.updatePrefs();
 				}
 			case 1:
 				if (controls.ACCEPT)
@@ -69,11 +70,13 @@ class GameplaySubState extends MusicBeatSubstate
 					enableGhostTapping = !enableGhostTapping;
 					ghostTapping.text = 'Ghost Tapping: ${enableGhostTapping}';
 					CoolUtil.ghostTapping = enableGhostTapping;
+					CoolUtil.updatePrefs();
 				}
 		}
 
 		if (controls.BACK)
 		{
+			CoolUtil.updatePrefs();
 			FlxG.state.closeSubState();
 			FlxG.state.openSubState(new OptionsSubState());
 		}
