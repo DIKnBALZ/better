@@ -33,6 +33,7 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
+		CoolUtil.updatePrefs();
 		PlayerSettings.init();
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 		super.create();

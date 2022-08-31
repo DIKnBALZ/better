@@ -104,6 +104,9 @@ class PlayState extends MusicBeatState
 
 	var inCutscene:Bool = false;
 
+	// so its easier to screw with the dumb shit or something idk (lines 1671 to 1681)
+	public static var ratingGoofies:Array<Float> = [0.9, 0.6, 0.3];
+
 	override public function create()
 	{
 		if (FlxG.sound.music != null)
@@ -1649,7 +1652,7 @@ class PlayState extends MusicBeatState
 
 	private function popUpScore(strumtime:Float, note:Note):Void
 	{
-		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
+		var noteDiff:Float = strumtime - Conductor.songPosition;
 		// boyfriend.playAnim('hey');
 		vocals.volume = 1;
 
@@ -1665,17 +1668,17 @@ class PlayState extends MusicBeatState
 
 		var daRating:String = "sick";
 
-		if (noteDiff > Conductor.safeZoneOffset * 0.9)
+		if (noteDiff >= Conductor.safeZoneOffset * ratingGoofies[0] || noteDiff <= Conductor.safeZoneOffset * -ratingGoofies[0])
 		{
 			daRating = 'shit';
 			score = 50;
 		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.75)
+		else if (noteDiff >= Conductor.safeZoneOffset * ratingGoofies[1] || noteDiff <= Conductor.safeZoneOffset * -ratingGoofies[1])
 		{
 			daRating = 'bad';
 			score = 100;
 		}
-		else if (noteDiff > Conductor.safeZoneOffset * 0.25)
+		else if (noteDiff >= Conductor.safeZoneOffset * ratingGoofies[2] || noteDiff <= Conductor.safeZoneOffset * -ratingGoofies[2])
 		{
 			daRating = 'good';
 			score = 200;
@@ -1812,20 +1815,20 @@ class PlayState extends MusicBeatState
 	private function keyShit():Void
 	{
 		// HOLDING
-		var up = FlxG.keys.firstPressed() == CoolUtil.upKeybind;
-		var right = FlxG.keys.firstPressed() == CoolUtil.rightKeybind;
-		var down = FlxG.keys.firstPressed() == CoolUtil.downKeybind;
-		var left = FlxG.keys.firstPressed() == CoolUtil.leftKeybind;
+		var up = FlxG.keys.firstPressed() == FlxG.save.data.upKeybind;
+		var right = FlxG.keys.firstPressed() == FlxG.save.data.rightKeybind;
+		var down = FlxG.keys.firstPressed() == FlxG.save.data.downKeybind;
+		var left = FlxG.keys.firstPressed() == FlxG.save.data.leftKeybind;
 
-		var upP = FlxG.keys.firstJustPressed() == CoolUtil.upKeybind;
-		var rightP = FlxG.keys.firstJustPressed() == CoolUtil.rightKeybind;
-		var downP = FlxG.keys.firstJustPressed() == CoolUtil.downKeybind;
-		var leftP = FlxG.keys.firstJustPressed() == CoolUtil.leftKeybind;
+		var upP = FlxG.keys.firstJustPressed() == FlxG.save.data.upKeybind;
+		var rightP = FlxG.keys.firstJustPressed() == FlxG.save.data.rightKeybind;
+		var downP = FlxG.keys.firstJustPressed() == FlxG.save.data.downKeybind;
+		var leftP = FlxG.keys.firstJustPressed() == FlxG.save.data.leftKeybind;
 
-		var upR = FlxG.keys.firstJustReleased() == CoolUtil.upKeybind;
-		var rightR = FlxG.keys.firstJustReleased() == CoolUtil.rightKeybind;
-		var downR = FlxG.keys.firstJustReleased() == CoolUtil.downKeybind;
-		var leftR = FlxG.keys.firstJustReleased() == CoolUtil.leftKeybind;
+		var upR = FlxG.keys.firstJustReleased() == FlxG.save.data.upKeybind;
+		var rightR = FlxG.keys.firstJustReleased() == FlxG.save.data.rightKeybind;
+		var downR = FlxG.keys.firstJustReleased() == FlxG.save.data.downKeybind;
+		var leftR = FlxG.keys.firstJustReleased() == FlxG.save.data.leftKeybind;
 
 		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
 		if ((upP || rightP || downP || leftP) && !boyfriend.stunned && generatedMusic)
@@ -1838,9 +1841,7 @@ class PlayState extends MusicBeatState
 			{
 				if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit)
 				{
-					// the sorting probably doesn't need to be in here? who cares lol
 					possibleNotes.push(daNote);
-					possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
 					ignoreList.push(daNote.noteData);
 				}
 			});
@@ -2029,10 +2030,10 @@ class PlayState extends MusicBeatState
 	{
 		// just double pasting this shit cuz fuk u
 		// REDO THIS SYSTEM!
-		var upP = FlxG.keys.firstJustPressed() == CoolUtil.upKeybind;
-		var rightP = FlxG.keys.firstJustPressed() == CoolUtil.rightKeybind;
-		var downP = FlxG.keys.firstJustPressed() == CoolUtil.downKeybind;
-		var leftP = FlxG.keys.firstJustPressed() == CoolUtil.leftKeybind;
+		var upP = FlxG.keys.firstJustPressed() == FlxG.save.data.upKeybind;
+		var rightP = FlxG.keys.firstJustPressed() == FlxG.save.data.rightKeybind;
+		var downP = FlxG.keys.firstJustPressed() == FlxG.save.data.downKeybind;
+		var leftP = FlxG.keys.firstJustPressed() == FlxG.save.data.leftKeybind;
 
 		if (leftP && !CoolUtil.ghostTapping)
 			noteMiss(0);

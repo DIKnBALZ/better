@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.input.keyboard.FlxKey;
 import lime.utils.Assets;
 
@@ -41,5 +42,15 @@ class CoolUtil
 			dumbArray.push(i);
 		}
 		return dumbArray;
+	}
+
+	public static function updatePrefs()
+	{
+		Reflect.setProperty(FlxG.save.data, "leftKeybind", leftKeybind);
+		Reflect.setProperty(FlxG.save.data, "downKeybind", downKeybind);
+		Reflect.setProperty(FlxG.save.data, "upKeybind", upKeybind);
+		Reflect.setProperty(FlxG.save.data, "rightKeybind", rightKeybind);
+		Reflect.setProperty(FlxG.save.data, "downscroll", downscroll);
+		Reflect.setProperty(FlxG.save.data, "ghostTapping", ghostTapping);
 	}
 }

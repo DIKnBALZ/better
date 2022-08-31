@@ -12,8 +12,8 @@ class GameplaySubState extends MusicBeatSubstate
 	var waitingForInput:Bool = false;
 	var downscroll:FlxText;
 	var ghostTapping:FlxText;
-	var enableDownscroll:Bool = CoolUtil.downscroll;
-	var enableGhostTapping:Bool = CoolUtil.ghostTapping;
+	var enableDownscroll:Bool = FlxG.save.data.downscroll == null ? CoolUtil.downscroll : FlxG.save.data.downscroll;
+	var enableGhostTapping:Bool = FlxG.save.data.ghostTapping == null ? CoolUtil.ghostTapping : FlxG.save.data.ghostTapping;
 
 	public function new()
 	{
