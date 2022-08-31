@@ -2,3 +2,4 @@ export/
 .vscode/
 APIStuff.hx
 *.hxml
+vscode-project.hxml
