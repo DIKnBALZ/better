@@ -40,7 +40,7 @@ class Paths {
 		return file('$key.hscript', library);
 
 	inline static public function hscriptContent(key:String, ?library:String)
-		return File.getContent(file('$key.hscript', library));
+		return haxe.Resource.getString(file('$key.hscript', library));
 
 	inline static public function txt(key:String, ?library:String)
 		return getPath('data/$key.txt', TEXT, library);
