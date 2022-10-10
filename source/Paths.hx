@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+import sys.io.File;
 
 class Paths {
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
@@ -34,6 +35,12 @@ class Paths {
 
 	inline static public function file(file:String, type:AssetType = TEXT, ?library:String)
 		return getPath(file, type, library);
+
+	inline static public function hscript(key:String, ?library:String)
+		return file('$key.hscript', library);
+
+	inline static public function hscriptContent(key:String, ?library:String)
+		return File.getContent(file('$key.hscript', library));
 
 	inline static public function txt(key:String, ?library:String)
 		return getPath('data/$key.txt', TEXT, library);
