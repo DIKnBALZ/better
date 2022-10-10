@@ -32,7 +32,8 @@ class StoryMenuState extends MusicBeatState
 		['Pico', 'Philly', "Blammed"],
 		['Satin-Panties', "High", "Milf"],
 		['Cocoa', 'Eggnog', 'Winter-Horrorland'],
-		['Senpai', 'Roses', 'Thorns']
+		['Senpai', 'Roses', 'Thorns'],
+		['Unknown-Suffering'],
 	];
 	var weekCharacters:Array<Dynamic> = [
 		['dad', 'bf', 'gf'],
@@ -41,7 +42,8 @@ class StoryMenuState extends MusicBeatState
 		['pico', 'bf', 'gf'],
 		['mom', 'bf', 'gf'],
 		['parents-christmas', 'bf', 'gf'],
-		['senpai', 'bf', 'gf']
+		['senpai', 'bf', 'gf'],
+		['dad', 'bf', 'gf'],
 	];
 
 	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true];
