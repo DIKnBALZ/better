@@ -15,12 +15,9 @@ import flixel.util.FlxTimer;
 import openfl.Assets;
 
 using StringTools;
-
-class TitleState extends MusicBeatState
-{
-	var credGroup:FlxGroup;
+class TitleState extends MusicBeatState {
 	var textGroup:FlxGroup;
-	var curWacky:Array<String> = []; // introtext shenanigans
+	var curWacky:Array<String> = [];
 
 	var newgroundsLogo:FlxSprite;
 	var logo:FlxSprite;
@@ -29,11 +26,10 @@ class TitleState extends MusicBeatState
 
 	var danced:Bool = false;
 	var initialized:Bool = false;
-	var quickStarted:Bool = false;
 	override public function create():Void {
+		curWacky = FlxG.random.getObject(getIntroTextShit());
 		CoolUtil.updatePrefs();
 		PlayerSettings.init();
-		curWacky = FlxG.random.getObject(getIntroTextShit());
 		super.create();
 
 		FlxG.save.bind('funkin', 'ninjamuffin99');
@@ -69,11 +65,9 @@ class TitleState extends MusicBeatState
 		add(titleText);
 
 		textGroup = new FlxGroup();
-		credGroup = new FlxGroup();
-		add(credGroup);
+		add(textGroup);
 
-		var blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		credGroup.add(blackScreen);
+		for (i in [girlfriend, logo, titleText]) i.visible = false;
 
 		newgroundsLogo = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
 		newgroundsLogo.setGraphicSize(Std.int(newgroundsLogo.width * 0.8));
@@ -83,7 +77,9 @@ class TitleState extends MusicBeatState
 		newgroundsLogo.screenCenter(X);
 		add(newgroundsLogo);
 
-		new FlxTimer().start(1, function(tmr:FlxTimer) {startIntro();});
+		new FlxTimer().start(1, function(tmr:FlxTimer) {
+			startIntro();
+		});
 	}
 
 	function startIntro() {
@@ -160,13 +156,12 @@ class TitleState extends MusicBeatState
 	function skipIntro():Void {
 		if (!skippedIntro) {
 			FlxG.camera.flash(FlxColor.WHITE, 4);
+			for (i in [girlfriend, logo, titleText]) i.visible = true;
 			remove(newgroundsLogo);
-			remove(credGroup);
+			remove(textGroup);
 			skippedIntro = true;
 		}
 	}
-
-	// bullshit
 
 	function getIntroTextShit():Array<Array<String>> {
 		var fullText:String = Assets.getText(Paths.txt('introText'));
@@ -181,7 +176,6 @@ class TitleState extends MusicBeatState
 			var money:Alphabet = new Alphabet(0, 0, textArray[i], true, false);
 			money.screenCenter(X);
 			money.y += (i * 60) + 200;
-			credGroup.add(money);
 			textGroup.add(money);
 		}
 	}
@@ -190,13 +184,11 @@ class TitleState extends MusicBeatState
 		var coolText:Alphabet = new Alphabet(0, 0, text, true, false);
 		coolText.screenCenter(X);
 		coolText.y += (textGroup.length * 60) + 200;
-		credGroup.add(coolText);
 		textGroup.add(coolText);
 	}
 
 	function deleteCoolText() {
 		while (textGroup.members.length > 0)
-			for (i in [credGroup, textGroup])
-				i.remove(textGroup.members[0], true);
+			textGroup.remove(textGroup.members[0], true);
 	}
 }
