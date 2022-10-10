@@ -1872,7 +1872,7 @@ class PlayState extends MusicBeatState
 		//	THIS IS THE SHIT PART RIGHT HERE, IT THINKS ALL 4 STRUMS IS ONE STRUM INSTEAD OF 4 **SEPARATE** STRUMS, HELP
 		// UPDATE WHAT THE FUCK I LEFT ALL OF THIS COMMENTED OUT AND I COULD STILL HIT NOTES, WHAT THE FUCK IS THIS USED FOR
 
-		if ((up || right || down || left) && !boyfriend.stunned && generatedMusic) {
+		if (generatedMusic) {
 			notes.forEachAlive(function(daNote:Note) {
 				if (daNote.canBeHit && daNote.mustPress && daNote.isSustainNote) {
 					switch (daNote.noteData) {
