@@ -1667,7 +1667,6 @@ class PlayState extends MusicBeatState
 		{
 			daRating = 'shit';
 			score = 50;
-			noteMiss(note.noteData);
 		}
 		else if (noteDiff >= Conductor.safeZoneOffset * ratingGoofies[1] || noteDiff <= Conductor.safeZoneOffset * -ratingGoofies[1])
 		{
@@ -1847,27 +1846,44 @@ class PlayState extends MusicBeatState
 			if (possibleNotes.length > 0) {
 				var daNote = possibleNotes[0];
 				if (possibleNotes.length >= 2) {
-					if (possibleNotes[0].noteData == possibleNotes[1].noteData && possibleNotes[0].strumTime == possibleNotes[1].strumTime) {
+					if (possibleNotes[0].strumTime == possibleNotes[1].strumTime) {
+						for (coolNote in possibleNotes) {
+							if (controlArray[coolNote.noteData]) goodNoteHit(coolNote);
+							else {
+								for (shit in 0...ignoreList.length) {
+									if (!controlArray[ignoreList[shit]]) noteMiss(coolNote.noteData);
+								}
+							}
+						}
+					} else if (possibleNotes[0].noteData == possibleNotes[1].noteData) {
 						possibleNotes[1].kill();
 						notes.remove(possibleNotes[1], true);
 						possibleNotes[1].destroy();
+						for (coolNote in possibleNotes) noteCheck(controlArray[coolNote.noteData], coolNote);
 					}
-					for (coolNote in possibleNotes) {if (controlArray[coolNote.noteData]) {noteCheck(controlArray[coolNote.noteData], coolNote);}}
-				}
-				else
-					noteCheck(controlArray[daNote.noteData], daNote);
+				} else noteCheck(controlArray[daNote.noteData], daNote);
+			} else {
+				notes.forEachAlive(function(daNote:Note) {
+					noteMiss(daNote.noteData);
+				});
 			}
-			else for (i in 0...controlArray.length) noteMiss(i);
 		}
 
 		//	THIS IS THE SHIT PART RIGHT HERE, IT THINKS ALL 4 STRUMS IS ONE STRUM INSTEAD OF 4 **SEPARATE** STRUMS, HELP
 		// UPDATE WHAT THE FUCK I LEFT ALL OF THIS COMMENTED OUT AND I COULD STILL HIT NOTES, WHAT THE FUCK IS THIS USED FOR
-		// update update: hahahhahaahhhhhahahhhahahaaaa
-		// update update update: THE INPUT SYSTEM IS ONE FUCKING LINE OF CODE. I CAN FINALLY SAY IT! IT IS ONE! LINE! OF COOOODDDDEEEEE!!
-		// update update update update: this isnt the entire input system :( but i still got it to work with doubles n shit
 
-		var controlArrayHOLD:Array<Bool> = [left, down, up, right];
-		if (generatedMusic) notes.forEachAlive(function(daNote:Note) {if (daNote.canBeHit && daNote.mustPress && daNote.isSustainNote) {if (controlArrayHOLD[daNote.noteData]) {goodNoteHit(daNote);}}});
+		if (generatedMusic) {
+			notes.forEachAlive(function(daNote:Note) {
+				if (daNote.canBeHit && daNote.mustPress && daNote.isSustainNote) {
+					switch (daNote.noteData) {
+						case 0: if (left) goodNoteHit(daNote);
+						case 1: if (down) goodNoteHit(daNote);
+						case 2: if (up) goodNoteHit(daNote);
+						case 3: if (right) goodNoteHit(daNote);
+					}
+				}
+			});
+		}
 
 		// shit part end
 
@@ -1902,7 +1918,7 @@ class PlayState extends MusicBeatState
 	}
 
 	function noteMiss(direction:Int = 1):Void {
-		if (!boyfriend.stunned && !CoolUtil.ghostTapping) {
+		if (!boyfriend.stunned) {
 			health -= 0.04;
 			if (combo > 5 && gf.animOffsets.exists('sad')) gf.playAnim('sad');
 			combo = 0;
@@ -1912,8 +1928,13 @@ class PlayState extends MusicBeatState
 			new FlxTimer().start(5 / 60, function(tmr:FlxTimer) { // get stunned for 5 seconds
 				boyfriend.stunned = false;
 			});
-			var shutup:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT"];
-			boyfriend.playAnim('sing${shutup[direction]}miss', true);
+		}
+
+		switch (direction) {
+			case 0: boyfriend.playAnim('singLEFTmiss', true);
+			case 1: boyfriend.playAnim('singDOWNmiss', true);
+			case 2: boyfriend.playAnim('singUPmiss', true);
+			case 3: boyfriend.playAnim('singRIGHTmiss', true);
 		}
 	}
 
